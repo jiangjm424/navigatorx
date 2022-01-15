@@ -1,0 +1,1 @@
+-keep class cn.jm.happy.navfragment.persist.** { }

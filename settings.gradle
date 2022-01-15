@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "navigatorx"
 include ':app'
+include ':navigatorx'
