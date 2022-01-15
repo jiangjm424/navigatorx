@@ -10,8 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cn.jm.happy.navigatorx.R
 import cn.jm.happy.navigatorx.databinding.FragmentHomeBinding
+import cn.jm.happy.navigatorx.ui.BaseFragment
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment() {
 
     private lateinit var homeViewModel: HomeViewModel
     private var _binding: FragmentHomeBinding? = null

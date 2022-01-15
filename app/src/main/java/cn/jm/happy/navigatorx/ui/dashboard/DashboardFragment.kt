@@ -10,8 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cn.jm.happy.navigatorx.R
 import cn.jm.happy.navigatorx.databinding.FragmentDashboardBinding
+import cn.jm.happy.navigatorx.ui.BaseFragment
 
-class DashboardFragment : Fragment() {
+class DashboardFragment : BaseFragment() {
 
     private lateinit var dashboardViewModel: DashboardViewModel
     private var _binding: FragmentDashboardBinding? = null
