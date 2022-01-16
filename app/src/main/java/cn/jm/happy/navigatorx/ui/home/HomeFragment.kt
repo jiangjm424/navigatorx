@@ -8,9 +8,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager.widget.ViewPager
 import cn.jm.happy.navigatorx.R
 import cn.jm.happy.navigatorx.databinding.FragmentHomeBinding
 import cn.jm.happy.navigatorx.ui.BaseFragment
+import cn.jm.happy.navigatorx.ui.home.tab.SectionsPagerAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
 
 class HomeFragment : BaseFragment() {
 
@@ -31,14 +36,23 @@ class HomeFragment : BaseFragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        val sectionsPagerAdapter = SectionsPagerAdapter(requireContext(), childFragmentManager)
+        val viewPager: ViewPager = binding.viewPager
+        viewPager.adapter = sectionsPagerAdapter
+        val tabs: TabLayout = binding.tabs
+        tabs.setupWithViewPager(viewPager)
+        val fab: FloatingActionButton = binding.fab
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+        fab.setOnClickListener { view ->
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
+        }
         return root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
