@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.IdRes
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavDestination
@@ -11,19 +12,37 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.fragment.FragmentNavigator
 
-@Navigator.Name("x_fragment")
+@Navigator.Name("fragment")
 class PersistFragmentNavigator(
     private val context: Context,
     private val manager: FragmentManager,
     private val containerId: Int
-) : FragmentNavigator(context, manager, containerId) {
-
+) : FragmentNavigator(
+    context, manager,
+    containerId
+) {
     companion object {
         private const val TAG = "PersistFragmentNavigator"
+        private const val KEY_ROOT_ID = "key_root_id"
     }
 
     override fun popBackStack(): Boolean {
-        return true
+        return false
+    }
+
+    private var root: Int? = null
+    override fun onSaveState(): Bundle? {
+        return root?.let {
+            Bundle().apply {
+                putInt(KEY_ROOT_ID, it)
+            }
+        }
+    }
+
+    override fun onRestoreState(savedState: Bundle?) {
+        if (savedState != null) {
+            root = savedState.getInt(KEY_ROOT_ID)
+        }
     }
 
     override fun navigate(
@@ -61,10 +80,8 @@ class PersistFragmentNavigator(
             ft.setMaxLifecycle(currentFrag, Lifecycle.State.STARTED)
             ft.hide(currentFrag)
         }
-        var destFrag = manager.findFragmentByTag(tag)
-        if (destFrag == null) {
-            destFrag =
-                instantiateFragment(context, manager, className, args).apply { arguments = args }
+        val destFrag = constructFragment(context, manager, className, args, tag)
+        if (!destFrag.isAdded) {
             ft.add(containerId, destFrag, tag)
             ft.setMaxLifecycle(destFrag, Lifecycle.State.RESUMED)
         } else {
@@ -72,6 +89,7 @@ class PersistFragmentNavigator(
             ft.setMaxLifecycle(destFrag, Lifecycle.State.RESUMED)
         }
         Log.i("jiang", "dest:$destFrag $className")
+        Log.i("jiang", "aa : $root")
 
         ft.setPrimaryNavigationFragment(destFrag)
 
@@ -82,26 +100,28 @@ class PersistFragmentNavigator(
         }
         ft.setReorderingAllowed(true)
         ft.commit()
-        return destination
-    }
-
-
-    override fun createDestination(): Destination {
-        return Destination(this)
+        if (root == null) {
+            root = destId
+            return destination
+        }
+        return null
     }
 
     private fun generateFragmentTag(className: String, destId: Int): String {
         return "$className-$destId"
     }
 
-    //不支持返回栈
-//    private val mBackStack: ArrayDeque<Int>? by lazy {
-//        try {
-//            val mBackStackField = FragmentNavigator::class.java.getDeclaredField("mBackStack")
-//            mBackStackField.isAccessible = true
-//            mBackStackField.get(this) as ArrayDeque<Int>
-//        } catch (ex: NoSuchFieldException) {
-//            null
-//        }
-//    }
+    private fun constructFragment(
+        context: Context,
+        fragmentManager: FragmentManager,
+        className: String,
+        args: Bundle?, tag: String
+    ): Fragment {
+        return fragmentManager.findFragmentByTag(tag) ?: super.instantiateFragment(
+            context,
+            fragmentManager,
+            className,
+            args
+        )
+    }
 }

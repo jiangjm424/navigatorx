@@ -1,5 +1,6 @@
 package cn.jm.happy.navigatorx.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,11 +9,17 @@ abstract class BaseFragment: Fragment() {
     companion object {
         private const val TAG = "BaseFragment"
     }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: $this")
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Log.i("Base","config changed $this")
+    }
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume: $this")

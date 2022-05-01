@@ -2,16 +2,25 @@ package cn.jm.happy.navfragment.persist
 
 import android.view.View
 import androidx.navigation.NavController
+import androidx.navigation.Navigator
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.NavHostFragment
 
 class PersistNavHostFragment : NavHostFragment() {
     override fun onCreateNavController(navController: NavController) {
         super.onCreateNavController(navController)
-        navController.navigatorProvider.addNavigator(
-            PersistFragmentNavigator(
-                requireContext(), childFragmentManager,
-                getContainerId()
-            )
+//        navController.navigatorProvider.addNavigator(
+//            PersistFragmentNavigator(
+//                requireContext(), childFragmentManager,
+//                getContainerId()
+//            )
+//        )
+    }
+
+    override fun createFragmentNavigator(): Navigator<out FragmentNavigator.Destination> {
+        return PersistFragmentNavigator(
+            requireContext(), childFragmentManager,
+            getContainerId()
         )
     }
 
